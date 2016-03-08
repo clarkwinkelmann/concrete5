@@ -75,8 +75,9 @@ class Version
      * @var \Concrete\Core\File\File
      */
     protected $file;
+
     /** @Id
-     * @Column(type="integer")
+     * @Column(type="integer", options={"unsigned": true})
      */
     protected $fvID = 0;
     /**

@@ -8,6 +8,7 @@ use Concrete\Core\User\Group\Group;
 use Concrete\Core\Authentication\AuthenticationType;
 use Concrete\Core\Page\Page;
 use Concrete\Core\User\Group\GroupList;
+use Doctrine\DBAL\Exception\InvalidFieldNameException;
 use Hautelook\Phpass\PasswordHash;
 use Concrete\Core\Permission\Access\Entity\Entity as PermissionAccessEntity;
 use Concrete\Core\User\Point\Action\Action as UserPointAction;
@@ -90,7 +91,13 @@ class User extends Object
         if ($session->get('uID') > 0) {
             $db = $app['database']->connection();
 
-            $row = $db->GetRow("select uID, uIsActive, uLastPasswordChange, ulsPasswordReset from Users where uID = ? and uName = ?", array($session->get('uID'), $session->get('uName')));
+            try {
+                $row = $db->GetRow("select uID, uIsActive, uLastPasswordChange, uIsPasswordReset from Users where uID = ? and uName = ?", array($session->get('uID'), $session->get('uName')));
+            } catch(InvalidFieldNameException $e) {
+                // handle v8
+                $row = $db->GetRow("select uID, uIsActive, uLastPasswordChange from Users where uID = ? and uName = ?", array($session->get('uID'), $session->get('uName')));
+            }
+
             $checkUID = (isset($row['uID'])) ? ($row['uID']) : (false);
 
             if ($checkUID == $session->get('uID')) {
@@ -104,7 +111,7 @@ class User extends Object
                     return false;
                 }
 
-                if ($row['ulsPasswordReset']) {
+                if (isset($row['uIsPasswordReset']) && ['uIsPasswordReset']) {
                     return false;
                 }
 

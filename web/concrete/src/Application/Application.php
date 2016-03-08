@@ -112,6 +112,12 @@ class Application extends Container
         }
         $this->setupFilesystem();
 
+        $em = \ORM::entityManager();
+        $config = $em->getConfiguration();
+        if (is_object($cache = $config->getMetadataCacheImpl())) {
+            $cache->flushAll();
+        }
+
         $pageCache = PageCache::getLibrary();
         if (is_object($pageCache)) {
             $pageCache->flush();

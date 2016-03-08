@@ -58,7 +58,11 @@ class DatabaseServiceProvider extends ServiceProvider
 
             foreach($packages as $package) {
                 $class = $package->getController();
-                $paths = array_merge($paths, $class->getPackageEntityPaths());
+                foreach($class->getPackageEntityPaths() as $packagePath) {
+                    if (is_dir($packagePath)) {
+                        $paths[] = $packagePath;
+                    }
+                }
             }
 
             $driver->addPaths($paths);

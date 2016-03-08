@@ -180,7 +180,7 @@ class Update
 
         $em = ORM::entityManager();
         $dbm = new DatabaseStructureManager($em);
-        $dbm->destroyProxyClasses('ConcreteCore');
+        $dbm->destroyProxyClasses();
         $dbm->generateProxyClasses();
 
         $configuration = new \Concrete\Core\Updater\Migrations\Configuration();

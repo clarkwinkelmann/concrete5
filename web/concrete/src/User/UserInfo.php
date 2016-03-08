@@ -195,7 +195,7 @@ class UserInfo extends Object implements \Concrete\Core\Permission\ObjectInterfa
     public function markAsPasswordReset()
     {
         $db = $this->connection;
-        $db->query("UPDATE Users SET ulsPasswordReset = 1 WHERE uID = ?", array($this->getUserID()));
+        $db->query("UPDATE Users SET uIsPasswordReset = 1 WHERE uID = ?", array($this->getUserID()));
 
         $updateEventData = new \Concrete\Core\User\Event\UserInfo($this);
         Events::dispatch('on_user_update', $updateEventData);
@@ -479,7 +479,7 @@ class UserInfo extends Object implements \Concrete\Core\Permission\ObjectInterfa
                 $dateTime,
                 $this->uID,
             );
-            $q = "update Users set uPassword = ?, uLastPasswordChange = ?, ulsPasswordReset = 0  where uID = ?";
+            $q = "update Users set uPassword = ?, uLastPasswordChange = ?, uIsPasswordReset = 0  where uID = ?";
             $r = $db->prepare($q);
             $res = $db->execute($r, $v);
 
